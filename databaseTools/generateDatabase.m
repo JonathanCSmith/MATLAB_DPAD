@@ -5,9 +5,9 @@
 % Description : Creates the matlab file database structure that is used
 % throughout this program
 %
-% Author: Jonathan Smith, Imperial College London
+% Author : Jonathan Smith, Imperial College London
 %
-% Liscence: LGPL?
+% Liscence : LGPL?
 %
 % ========================================================================
 
@@ -29,7 +29,7 @@ function [] = generateDatabase()
     
     % --------------------------------------------------------------------
     % Setup file structure
-    databaseRoot = strcat(guiVariables.databasePath,'/CSynBI_Database');
+    databaseRoot = strcat(guiVariables.databasePath,'/CSynBi_Database');
     mkdir(databaseRoot);
     mkdir(strcat(databaseRoot,'/LoadedData'));
     mkdir(strcat(databaseRoot,'/ProcessedData'));
@@ -133,6 +133,6 @@ end
 
 % ========================================================================
 %
-% FUNCTION END
+% FUNCTION END : generateDatabase
 %
 % ========================================================================

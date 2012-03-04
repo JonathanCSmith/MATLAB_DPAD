@@ -3,11 +3,11 @@
 % Function : evaluateDatabase
 %
 % Description : Main function loop for loading, processing, analysing and
-% displying CSynBI's data.
+% displying CSynBi's data.
 %
-% Author: Jonathan Smith, Imperial College London
+% Author : Jonathan Smith, Imperial College London
 %
-% Liscence: LGPL?
+% Liscence : LGPL?
 %
 % ========================================================================
 
@@ -99,6 +99,6 @@ function status = evaluateDatabase ()
 end
 % ========================================================================
 %
-% FUNCTION END: evaluateDatabase
+% FUNCTION END : evaluateDatabase
 %
 % ========================================================================

@@ -1,17 +1,17 @@
 % ========================================================================
 %
-% Function : CSynBI_LPAD
+% Function : CSynBi_LPAD
 %
 % Description : Main function loop for loading, processing, analysing and
-% displying CSynBI's data.
+% displying CSynBi's data.
 %
-% Author: Jonathan Smith, Imperial College London
+% Author : Jonathan Smith, Imperial College London
 %
-% Liscence: LGPL?
+% Liscence : LGPL?
 %
 % ========================================================================
 
-function [] = CSynBI_LPAD (debug)
+function [] = CSynBi_LPAD (debug)
 
     % --------------------------------------------------------------------
     % Setup the initial paramaters for the workspace
@@ -27,17 +27,18 @@ function [] = CSynBI_LPAD (debug)
     addpath(genpath(runtimePath));
     
     % Core GUI setup, see mfile for details
-    CSynBI_GUICore(); % TODO
+    CSynBi_GUICore(); % TODO
     
     % Runtime event pager and data store
     guiVariables = evalin('base', 'guiVariables'); 
     % --------------------------------------------------------------------
     
     % --------------------------------------------------------------------
-    % TODO Environment setup checks from CSynBI_GUICore
+    % TODO Environment setup checks from CSynBi_GUICore
     %
     % Not sure if this is necessary at the moment, it is just here as a
-    % placeholder
+    % placeholder - will need to do just in case as their is no way of
+    % evaluating whether this has worked or not
     %
     % --------------------------------------------------------------------
     
@@ -107,6 +108,6 @@ function [] = CSynBI_LPAD (debug)
 end
 % ========================================================================
 %
-% FUNCTION END: CSynBI_LPAD
+% FUNCTION END : CSynBi_LPAD
 %
 % ========================================================================
