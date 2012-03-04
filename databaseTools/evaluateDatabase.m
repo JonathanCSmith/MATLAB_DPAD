@@ -15,77 +15,77 @@ function status = evaluateDatabase ()
 
     % --------------------------------------------------------------------
     % Setup initial parameters
-    guiVariables = evalin('base','guiVariables');
+    guiVariables = evalin('base', 'guiVariables');
     % --------------------------------------------------------------------
     
     % --------------------------------------------------------------------
     % Compare database
-    if (~exist(guiVariables.databasePath,'dir'))
+    if (~exist(guiVariables.databasePath, 'dir'))
        status = false;
        return;
     end
     
-    if (~exist(strcat(guiVariables.databasePath,'/LoadedData'),'dir'))
+    if (~exist(strcat(guiVariables.databasePath, '/LoadedData'), 'dir'))
        status = false;
        return;
     elseif (~exist(strcat(guiVariables.databasePath, ...
-            '/LoadedData/UnprocessedDataStore.mat'),'file'))
+            '/LoadedData/UnprocessedDataStore.mat'), 'file'))
         status = false;
         return;
     end
     
-    if (~exist(strcat(guiVariables.databasePath,'/ProcessedData'),'dir'))
+    if (~exist(strcat(guiVariables.databasePath, '/ProcessedData'), 'dir'))
        status = false;
        return;
     elseif (~exist(strcat(guiVariables.databasePath, ...
-            '/LoadedData/ProcessedDataStore.mat'),'file'))
+            '/LoadedData/ProcessedDataStore.mat'), 'file'))
         status = false;
         return;
     end
     
-    if (~exist(strcat(guiVariables.databasePath,'/AnalysedData'),'dir'))
+    if (~exist(strcat(guiVariables.databasePath, '/AnalysedData'), 'dir'))
        status = false;
        return;
     elseif (~exist(strcat(guiVariables.databasePath, ...
-            '/LoadedData/AnalysedDataStore.mat'),'file'))
+            '/LoadedData/AnalysedDataStore.mat'), 'file'))
         % TODO implement when its ready
         %status = false;
         %return;
     end
     
-    if (~exist(strcat(guiVariables.databasePath,'/Experiment'),'dir'))
+    if (~exist(strcat(guiVariables.databasePath, '/Experiment'), 'dir'))
        status = false;
        return;
     elseif (~exist(strcat(guiVariables.databasePath, ...
-            '/LoadedData/ExperimentStore.mat'),'file'))
+            '/LoadedData/ExperimentStore.mat'), 'file'))
         status = false;
         return;
     end
     
-    if (~exist(strcat(guiVariables.databasePath,'/Processers'),'dir'))
+    if (~exist(strcat(guiVariables.databasePath, '/Processers'), 'dir'))
        status = false;
        return;
     elseif (~exist(strcat(guiVariables.databasePath, ...
-            '/LoadedData/Processers'),'file'))
+            '/LoadedData/Processers'), 'file'))
         status = false;
         return;
     end
     
-    if (~exist(strcat(guiVariables.databasePath,'/Analysers'),'dir'))
+    if (~exist(strcat(guiVariables.databasePath, '/Analysers'), 'dir'))
        status = false;
        return;
     elseif (~exist(strcat(guiVariables.databasePath, ...
-            '/LoadedData/Analysers.mat'),'file'))
+            '/LoadedData/Analysers.mat'), 'file'))
         % TODO implement when ready
         %status = false;
         %return;
     end
     
-    if (~exist(strcat(guiVariables.databasePath,'/Users'),'dir'))
+    if (~exist(strcat(guiVariables.databasePath, '/Users'), 'dir'))
        status = false;
        return;
     elseif (~exist(strcat(guiVariables.databasePath, ...
-            '/LoadedData/UserStore.mat'),'file'))
+            '/LoadedData/UserStore.mat'), 'file'))
         status = false;
         return;
     end

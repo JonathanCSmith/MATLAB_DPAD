@@ -13,37 +13,49 @@
 
 function [] = CSynBi_LPAD (debug)
 
+    % TODO implement a loop so that multiple experiments can be loaded
+
     % --------------------------------------------------------------------
     % Setup the initial paramaters for the workspace
-    if (debug == false)
-        close all hidden;
-        clear all hidden;
-        clc;
+    if (~exist('session','var'))
+        if (debug == false)
+            close all hidden;
+            clear all hidden;
+            clc;
+        end
+        session = true;
+        database = false;
+
+        % Ensure the environment will load all of the files required
+        runtimePath = pwd;
+        addpath(genpath(runtimePath));
+
+        % Core GUI setup, see mfile for details
+        CSynBi_GUICore(); % TODO
+
+        % Runtime event pager and data store
+        guiVariables = evalin('base', 'guiVariables');
     end
-    database = false;
-    
-    % Ensure the environment will load all of the files required
-    runtimePath = pwd;
-    addpath(genpath(runtimePath));
-    
-    % Core GUI setup, see mfile for details
-    CSynBi_GUICore(); % TODO
-    
-    % Runtime event pager and data store
-    guiVariables = evalin('base', 'guiVariables'); 
     % --------------------------------------------------------------------
     
     % --------------------------------------------------------------------
-    % TODO Environment setup checks from CSynBi_GUICore
-    %
-    % Not sure if this is necessary at the moment, it is just here as a
-    % placeholder - will need to do just in case as their is no way of
-    % evaluating whether this has worked or not
-    %
+    % Check that the GUI setup correctly
+    if (~isfield(guiVariables, 'handles') && ...
+            size(guiVariables.handles,2) ~= 21)
+        % TODO implement a user inform of badly formed GUI / Session
+        return;
+    end
     % --------------------------------------------------------------------
     
     % --------------------------------------------------------------------
     % Database loading, calls generator if it is a new database
+    if (~strcmp(guiVariables.databasePath,'NULL'))
+        if (evaluateDatabase)
+            database = true;
+        end
+    end
+    
+    % While loop for generating a correct database // might be unnecessary
     while (~database)
         
         % Handles a new database scenario
@@ -100,6 +112,51 @@ function [] = CSynBi_LPAD (debug)
                 return;
                 
         end
+    end
+    % --------------------------------------------------------------------
+    
+    % --------------------------------------------------------------------
+    % Setup a user environment
+    
+    % Handles if a user is already logged in, this is for future looping of
+    % the main function to handle multiple experiment loading
+    if (isfield(guiVariables, 'User'))
+        msg = 'Do you want to use your current username?';
+        answ = questdlg(msg, 'User');
+        switch answ
+            case 'Yes'
+                skip = true;
+            case 'No'
+                skip = false;
+            case 'Cancel'
+                % TODO user inform on cancel press
+                return;
+        end
+    else
+        skip = false;
+    end
+    
+    % This loop displays a list of known users or can add a new user, TODO
+    % password implementation
+    if (~skip)
+        assignin('base', 'guiVariables', guiVariables);
+        buildUserDisplay();
+        set(guiVariables.handles(1), 'Visible', 'on');
+        uiwait(guiVariables.handles(1));
+        guiVariables = evalin('base', 'guiVariables');
+        
+        % Check to see that it was all set up correctly & save for new
+        % users
+        if (isfield(guiVariables, 'User') && ~isempty(guiVariables.User))
+            UserStore = guiVariables.data; %#ok<NASGU>
+            save(strcat(guiVariables.databasePath, ...
+                '/Users/UserStore.mat'), 'UserStore');
+        else
+            % TODO implement a user inform that the user system failed
+            return;
+        end
+    else
+        set(guiVariables.handles(1), 'Visible', 'on');
     end
     % --------------------------------------------------------------------
     
