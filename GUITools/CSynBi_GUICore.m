@@ -253,11 +253,11 @@ function [] = gui_main ()
     set(h1, 'Visibile', 'off');
     
     % Setup handles structure so all components can be accessed later.
-    guiVariables = struct('handles', [h1,h2,h3,h4,h5,h6,h7,h8,h9,h10, ...
+    threadSnapshot = struct('handles', [h1,h2,h3,h4,h5,h6,h7,h8,h9,h10, ...
                             h11,h12,h13,h14,h15,h16,h17,h18,h19,h20, ...
                             h21], ...
                           'databasePath', 'NULL');
-    assignin('base','guiVariables',guiVariables);
+    assignin('base','threadSnapshot',threadSnapshot);
     
     % --------------------------------------------------------------------
 
@@ -283,22 +283,22 @@ function DisplayPanels_ResizeFcn(~,~,~) %#ok<DEFNU>
 
     % --------------------------------------------------------------------
     % Check that it has been constructed first
-    if evalin('base','exist(''guiVariables'',''var'');') == 1
+    if evalin('base','exist(''threadSnapshot'',''var'');') == 1
 
         % -----------------------------------------------------------------
         % Variable setup
-        guiVariables = evalin('base', 'guiVariables');
-        figureposition = get(guiVariables.handles(1), 'Position');
-        interactposition = get(guiVariables.handles(5), 'Position');
+        threadSnapshot = evalin('base', 'threadSnapshot');
+        figureposition = get(threadSnapshot.handles(1), 'Position');
+        interactposition = get(threadSnapshot.handles(5), 'Position');
         newinteractposition = interactposition;
-        infoposition = get(guiVariables.handles(9), 'Position');
+        infoposition = get(threadSnapshot.handles(9), 'Position');
         newinfoposition = infoposition;
-        axes1position = get(guiVariables.handles(10), 'Position');
+        axes1position = get(threadSnapshot.handles(10), 'Position');
         newaxes1position = axes1position;
-        axes2position = get(guiVariables.handles(15), 'Position');
+        axes2position = get(threadSnapshot.handles(15), 'Position');
         newaxes2position = axes2position;
-        panelposition = get(guiVariables.handles(2), 'Position');
-        textposition = get(guiVariables.handles(20), 'Position');
+        panelposition = get(threadSnapshot.handles(2), 'Position');
+        textposition = get(threadSnapshot.handles(20), 'Position');
         newtextposition = textposition;
         % -----------------------------------------------------------------
 
@@ -307,7 +307,7 @@ function DisplayPanels_ResizeFcn(~,~,~) %#ok<DEFNU>
         if interactposition(3) * figureposition(3) ~= 25
             newinteractposition(3) = 25 / figureposition(3);
             newinteractposition(1) = 1 - newinteractposition(3);
-            set(guiVariables.handles(5), 'Position', newinteractposition);
+            set(threadSnapshot.handles(5), 'Position', newinteractposition);
         end
         % -----------------------------------------------------------------
 
@@ -316,7 +316,7 @@ function DisplayPanels_ResizeFcn(~,~,~) %#ok<DEFNU>
         if infoposition(4) * figureposition(4) ~= 8
            newinfoposition(4) = 8 / figureposition(4); 
            newinfoposition(3) = newinteractposition(1);
-           set(guiVariables.handles(9), 'Position', newinfoposition);
+           set(threadSnapshot.handles(9), 'Position', newinfoposition);
 
            % Max width on images
            newaxes1position(3) = (11.5 / newinfoposition(3)) ...
@@ -327,12 +327,12 @@ function DisplayPanels_ResizeFcn(~,~,~) %#ok<DEFNU>
            newaxes2position(1) = (1 - newaxes1position(3)) - ...
                ((17.5 / newinfoposition(3)) ...
                     /figureposition(3));
-           set(guiVariables.handles(10), 'Position', newaxes1position);
-           set(guiVariables.handles(15), 'Position', newaxes2position);
+           set(threadSnapshot.handles(10), 'Position', newaxes1position);
+           set(threadSnapshot.handles(15), 'Position', newaxes2position);
 
            % Text width
            newtextposition(3) = newaxes2position(1);
-           set(guiVariables.handles(20), 'Position', newtextposition);
+           set(threadSnapshot.handles(20), 'Position', newtextposition);
 
         end
         % -----------------------------------------------------------------
@@ -347,7 +347,7 @@ function DisplayPanels_ResizeFcn(~,~,~) %#ok<DEFNU>
            newpanelposition(2) = newinfoposition(4);
            newpanelposition(3) = 1 - newinteractposition(3);
            newpanelposition(4) = 1 - newinfoposition(4) - figureposition(4)/3000;
-           set(guiVariables.handles([2,3,4,21]),'Position',newpanelposition);
+           set(threadSnapshot.handles([2,3,4,21]),'Position',newpanelposition);
         end
         % -----------------------------------------------------------------
         

@@ -34,14 +34,14 @@ function [] = CSynBi_LPAD (debug)
         CSynBi_GUICore(); % TODO
 
         % Runtime event pager and data store
-        guiVariables = evalin('base', 'guiVariables');
+        threadSnapshot = evalin('base', 'threadSnapshot');
     end
     % --------------------------------------------------------------------
     
     % --------------------------------------------------------------------
     % Check that the GUI setup correctly
-    if (~isfield(guiVariables, 'handles') && ...
-            size(guiVariables.handles,2) ~= 21)
+    if (~isfield(threadSnapshot, 'handles') && ...
+            size(threadSnapshot.handles,2) ~= 21)
         % TODO implement a user inform of badly formed GUI / Session
         return;
     end
@@ -49,7 +49,7 @@ function [] = CSynBi_LPAD (debug)
     
     % --------------------------------------------------------------------
     % Database loading, calls generator if it is a new database
-    if (~strcmp(guiVariables.databasePath,'NULL'))
+    if (~strcmp(threadSnapshot.databasePath,'NULL'))
         if (evaluateDatabase)
             database = true;
         end
@@ -77,8 +77,8 @@ function [] = CSynBi_LPAD (debug)
                    % TODO user inform on invalid database location
                    return
                 else 
-                    guiVariables.databasePath = answ;
-                    assignin('base', 'guiVariables', guiVariables);
+                    threadSnapshot.databasePath = answ;
+                    assignin('base', 'threadSnapshot', threadSnapshot);
                     answ = evaluateDatabase();
                     if (answ)
                         database = true;
@@ -96,8 +96,8 @@ function [] = CSynBi_LPAD (debug)
                 % Generate database with preset structure and update local
                 % runtime variables
                 generateDatabase(); % TODO full generation and loading 
-                guiVariables = evalin('base', 'guiVariables');
-                if (strcmp(guiVariables.databasePath,'NULL')) 
+                threadSnapshot = evalin('base', 'threadSnapshot');
+                if (strcmp(threadSnapshot.databasePath,'NULL')) 
                     % TODO implement a user inform here - something went 
                     % wrong
                     return;
@@ -118,9 +118,12 @@ function [] = CSynBi_LPAD (debug)
     % --------------------------------------------------------------------
     % Setup a user environment
     
+    threadSnapshot.data = load(strcat(databasePath,'/Users/User.mat'), ...
+        'UserStore');
+    
     % Handles if a user is already logged in, this is for future looping of
     % the main function to handle multiple experiment loading
-    if (isfield(guiVariables, 'User'))
+    if (isfield(threadSnapshot, 'user'))
         msg = 'Do you want to use your current username?';
         answ = questdlg(msg, 'User');
         switch answ
@@ -139,24 +142,28 @@ function [] = CSynBi_LPAD (debug)
     % This loop displays a list of known users or can add a new user, TODO
     % password implementation
     if (~skip)
-        assignin('base', 'guiVariables', guiVariables);
+        assignin('base', 'threadSnapshot', threadSnapshot);
         buildUserDisplay();
-        set(guiVariables.handles(1), 'Visible', 'on');
-        uiwait(guiVariables.handles(1));
-        guiVariables = evalin('base', 'guiVariables');
+        set(threadSnapshot.handles(1), 'Visible', 'on');
+        uiwait(threadSnapshot.handles(1));
+        threadSnapshot = evalin('base', 'threadSnapshot');
         
+        % -----------------------------------------------------------------
         % Check to see that it was all set up correctly & save for new
         % users
-        if (isfield(guiVariables, 'User') && ~isempty(guiVariables.User))
-            UserStore = guiVariables.data; %#ok<NASGU>
-            save(strcat(guiVariables.databasePath, ...
+        if (isfield(threadSnapshot, 'user') && ...
+                ~isempty(threadSnapshot.user))
+            UserStore = threadSnapshot.data; %#ok<NASGU>
+            save(strcat(threadSnapshot.databasePath, ...
                 '/Users/UserStore.mat'), 'UserStore');
         else
             % TODO implement a user inform that the user system failed
             return;
         end
+        % -----------------------------------------------------------------
+        
     else
-        set(guiVariables.handles(1), 'Visible', 'on');
+        set(threadSnapshot.handles(1), 'Visible', 'on');
     end
     % --------------------------------------------------------------------
     

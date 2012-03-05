@@ -15,76 +15,76 @@ function status = evaluateDatabase ()
 
     % --------------------------------------------------------------------
     % Setup initial parameters
-    guiVariables = evalin('base', 'guiVariables');
+    threadSnapshot = evalin('base', 'threadSnapshot');
     % --------------------------------------------------------------------
     
     % --------------------------------------------------------------------
     % Compare database
-    if (~exist(guiVariables.databasePath, 'dir'))
+    if (~exist(threadSnapshot.databasePath, 'dir'))
        status = false;
        return;
     end
     
-    if (~exist(strcat(guiVariables.databasePath, '/LoadedData'), 'dir'))
+    if (~exist(strcat(threadSnapshot.databasePath, '/LoadedData'), 'dir'))
        status = false;
        return;
-    elseif (~exist(strcat(guiVariables.databasePath, ...
+    elseif (~exist(strcat(threadSnapshot.databasePath, ...
             '/LoadedData/UnprocessedDataStore.mat'), 'file'))
         status = false;
         return;
     end
     
-    if (~exist(strcat(guiVariables.databasePath, '/ProcessedData'), 'dir'))
+    if (~exist(strcat(threadSnapshot.databasePath, '/ProcessedData'), 'dir'))
        status = false;
        return;
-    elseif (~exist(strcat(guiVariables.databasePath, ...
+    elseif (~exist(strcat(threadSnapshot.databasePath, ...
             '/LoadedData/ProcessedDataStore.mat'), 'file'))
         status = false;
         return;
     end
     
-    if (~exist(strcat(guiVariables.databasePath, '/AnalysedData'), 'dir'))
+    if (~exist(strcat(threadSnapshot.databasePath, '/AnalysedData'), 'dir'))
        status = false;
        return;
-    elseif (~exist(strcat(guiVariables.databasePath, ...
+    elseif (~exist(strcat(threadSnapshot.databasePath, ...
             '/LoadedData/AnalysedDataStore.mat'), 'file'))
         % TODO implement when its ready
         %status = false;
         %return;
     end
     
-    if (~exist(strcat(guiVariables.databasePath, '/Experiment'), 'dir'))
+    if (~exist(strcat(threadSnapshot.databasePath, '/Experiment'), 'dir'))
        status = false;
        return;
-    elseif (~exist(strcat(guiVariables.databasePath, ...
+    elseif (~exist(strcat(threadSnapshot.databasePath, ...
             '/LoadedData/ExperimentStore.mat'), 'file'))
         status = false;
         return;
     end
     
-    if (~exist(strcat(guiVariables.databasePath, '/Processers'), 'dir'))
+    if (~exist(strcat(threadSnapshot.databasePath, '/Processers'), 'dir'))
        status = false;
        return;
-    elseif (~exist(strcat(guiVariables.databasePath, ...
+    elseif (~exist(strcat(threadSnapshot.databasePath, ...
             '/LoadedData/Processers'), 'file'))
         status = false;
         return;
     end
     
-    if (~exist(strcat(guiVariables.databasePath, '/Analysers'), 'dir'))
+    if (~exist(strcat(threadSnapshot.databasePath, '/Analysers'), 'dir'))
        status = false;
        return;
-    elseif (~exist(strcat(guiVariables.databasePath, ...
+    elseif (~exist(strcat(threadSnapshot.databasePath, ...
             '/LoadedData/Analysers.mat'), 'file'))
         % TODO implement when ready
         %status = false;
         %return;
     end
     
-    if (~exist(strcat(guiVariables.databasePath, '/Users'), 'dir'))
+    if (~exist(strcat(threadSnapshot.databasePath, '/Users'), 'dir'))
        status = false;
        return;
-    elseif (~exist(strcat(guiVariables.databasePath, ...
+    elseif (~exist(strcat(threadSnapshot.databasePath, ...
             '/LoadedData/UserStore.mat'), 'file'))
         status = false;
         return;

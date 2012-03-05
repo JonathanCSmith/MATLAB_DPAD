@@ -15,21 +15,21 @@ function [] = generateDatabase()
 
     % --------------------------------------------------------------------
     % Setup initial parameters
-    guiVariables = evalin('base','guiVariables');
+    threadSnapshot = evalin('base','threadSnapshot');
     m1 = 'Please located the desired directory for the database to be';
     m2 = ' created';
     uiwait(msgbox(strcat(m1,m2), 'Database Location', 'help'));
     answ = uigetdir();
     
     if (answ == 0)
-        guiVariables.databasePath = 'NULL';
+        threadSnapshot.databasePath = 'NULL';
         return;
     end
     % --------------------------------------------------------------------
     
     % --------------------------------------------------------------------
     % Setup file structure
-    databaseRoot = strcat(guiVariables.databasePath,'/CSynBi_Database');
+    databaseRoot = strcat(threadSnapshot.databasePath,'/CSynBi_Database');
     mkdir(databaseRoot);
     mkdir(strcat(databaseRoot,'/LoadedData'));
     mkdir(strcat(databaseRoot,'/ProcessedData'));
@@ -38,7 +38,7 @@ function [] = generateDatabase()
     mkdir(strcat(databaseRoot,'/Processers'));
     mkdir(strcat(databaseRoot,'/Analysers'));
     mkdir(strcat(databaseRoot,'/Users'));
-    guiVariables.databasePath = databaseRoot;
+    threadSnapshot.databasePath = databaseRoot;
     % --------------------------------------------------------------------
     
     % --------------------------------------------------------------------
@@ -125,7 +125,7 @@ function [] = generateDatabase()
     
     % --------------------------------------------------------------------
     % Finish Up!
-    assignin('base', 'guiVariables', guiVariables);
+    assignin('base', 'threadSnapshot', threadSnapshot);
     % --------------------------------------------------------------------
 
 
