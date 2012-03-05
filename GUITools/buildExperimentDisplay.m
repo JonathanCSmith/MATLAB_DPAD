@@ -1,11 +1,11 @@
-%% Parent Function for the User Display Panel's construction
+%% Parent Function for the Experiment Display Panel's construction
 
 % ========================================================================
 %
-% Function : buildUserDisplay
+% Function : buildExperimentDisplay
 %
 % Description : A GUI function that generates a panel within the core GUI
-% to display User Information, it takes information from the thread
+% to display Experiment Information, it takes information from the thread
 % snapshot to generate a relavant panel.
 %
 % Author : Jonathan Smith, Imperial College London
@@ -14,7 +14,7 @@
 %
 % ========================================================================
 
-function [] = buildUserDisplay(varargin)
+function [] = buildExperimentDisplay(varargin)
     
     % --------------------------------------------------------------------
     % Handle any callbacks for the buttons/functions that are associated
@@ -43,27 +43,32 @@ function [] = buildUserDisplay(varargin)
         delete(get(threadSnapshot.handles(21), 'Children'));
         % ----------------------------------------------------------------
         
+        
         % ----------------------------------------------------------------
-        % Construct the main panel TODO handle password hashes
+        % Construct the main panel
         buildMainPanel();
         threadSnapshot = evalin('base', 'threadSnapshot');
         Data = threadSnapshot.data;
-        Data(:,3) = { false };
+        Data(:, end + 1) = { false };
         set(threadSnapshot.mainPanelHandles(1), ...
-            'ColumnFormat', { 'char' 'char' 'logical' }, ...
-            'ColumnEditable', [ false false true ], ...
-            'ColumnName', { 'UserID'; 'User Name'; 'Selected' }, ...
+            'ColumnFormat', ...
+                { 'char' 'char' 'char' 'char' 'char' 'numeric' 'logical' }, ...
+            'ColumnEditable', ...
+                [ false false false false false false true ], ...
+            'ColumnName', ...
+                { 'ExperimentID'; 'Title'; 'Description'; ...
+                'Date'; 'User'; 'Batches'; 'Selected' }, ...
             'ColumnWidth', 'auto', ...
             'Data', Data);
         % ----------------------------------------------------------------
         
         % ----------------------------------------------------------------
         % Construct the info panel
-        m1 = 'For existing users please select your username from the';
-        m2 = ' above list and choose the ''existing'' button when you';
-        m3 = ' wish to continue, if you are a new user then please select';
-        m4 = ' ''new'' to add your username to the the database';
-        msg = strcat(m1, m2, m3, m4);
+        m1 = 'If you wish to edit an existing experiment, please select';
+        m2 = ' it from the list below and then press ''Existing''.';
+        m3 = ' Otherwise, select ''New'' and add the experiment';
+        m4 = ' information.';
+        msg = strcat(m1,m2,m3,m4);
         buildInfoPanel(msg, 1, 2);
         % ----------------------------------------------------------------
         
@@ -71,11 +76,9 @@ function [] = buildUserDisplay(varargin)
         % Construct the interaction panel
         buildInteractionPanel();
         threadSnapshot = evalin('base', 'threadSnapshot');
-        m1 = 'Please select whether you are a new user or if you are an';
-        m2 = ' existing user, if you are an existing user select your';
-        m3 = ' username from the list on the right then press';
-        m4 = ' ''existing''';
-        msg = strcat(m1, m2, m3, m4);
+        m1 = 'Please select an existing experiment and press ''Existing''';
+        m2 = ' or generate a new one by pressing ''New''';
+        msg = strcat(m1, m2);
         set(threadSnapshot.interactionPanelHandles(1), ...
             'Position', [0.073 0.265 0.8 0.126506024096386],...
             'String', 'New');
@@ -99,7 +102,7 @@ end
 
 % ========================================================================
 %
-% FUNCTION END : buildUserDisplay
+% FUNCTION END : buildExperimentDisplay
 %
 % ========================================================================
 
@@ -124,15 +127,16 @@ function varargout = buildMainPanel () %#ok<STOUT>
         'Parent', threadSnapshot.handles(3), ...
         'Units', 'normalized', ...
         'Data', ...
-            { blanks(0) blanks(0) blanks(0); ...
-              blanks(0) blanks(0) blanks(0) }, ...
+            { blanks(0) blanks(0) blanks(0) blanks(0) blanks(0) ...
+            blanks(0) blanks(0); blanks(0) blanks(0) blanks(0) ...
+            blanks(0) blanks(0) blanks(0) blanks(0) }, ...
         'Position', ...
             [-0.00177304964539007 0.0344827586206897 ...
             0.99822695035461 1], ...
-        'Tag', 'userDisplayTable', ...
-        'CellEditCallback', @(hObject, eventdata)buildUserDisplay( ...
-            'userDisplayTable_Callback', hObject, eventdata, guidata( ...
-                hObject)));
+        'Tag', 'experimentDisplayTable', ...
+        'CellEditCallback', @(hObject, eventdata)buildExperimentDisplay( ...
+            'experimentDisplayTable_Callback', hObject, eventdata, ...
+                guidata(hObject)));
     % --------------------------------------------------------------------
             
     threadSnapshot.mainPanelHandles = h1;
@@ -168,7 +172,7 @@ function varargout = buildInteractionPanel ()
         'Position', ...
             [0.073 0.265 0.8 0.126506024096386], ...
         'Tag', 'interactButton1', ...
-        'Callback', @(hObject, eventdata)buildUserDisplay(...
+        'Callback', @(hObject, eventdata)buildExperimentDisplay(...
             'interactButton1_Callback', hObject, eventdata, guidata( ...
                 hObject)));
             
@@ -179,7 +183,7 @@ function varargout = buildInteractionPanel ()
         'Position', ...
             [0.08 0.09 0.8 0.126506024096386], ...
         'Tag', 'interactButton2', ...
-        'Callback', @(hObject, eventdata)buildUserDisplay(...
+        'Callback', @(hObject, eventdata)buildExperimentDisplay(...
             'interactButton2_Callback', hObject, eventdata, guidata( ...
                 hObject)));
           
@@ -208,14 +212,14 @@ end
 
 % ========================================================================
 %
-% Function : userDisplayTable_Callback
+% Function : experimentDisplayTable_Callback
 %
 % Description : Notifies when a selection has been made in the user display
 % list
 %
 % ========================================================================
 
-function userDisplayTable_Callback(~,~,~) %#ok<DEFNU>
+function experimentDisplayTable_Callback(~,~,~) %#ok<DEFNU>
 
     % Currently unused
     
@@ -239,24 +243,34 @@ end
 function interactButton1_Callback (~,~,~) %#ok<DEFNU>
     
     threadSnapshot = evalin('base', 'threadSnapshot');
-    answ = inputdlg('Enter your new username', 'Username');
+    answ = inputdlg('Enter an experiment title', 'Title');
+    answ2 = inputdlg('Enter an experiment description', 'Description');
     
     % --------------------------------------------------------------------
-    % Check that the username is valid, redo on fail
-    % TODO implement a password
-    if (~isempty(answ))
-        threadSnapshot.user = char(answ);
-        threadSnapshot.data = [{dicomuid}, {answ}, {'none'}];
+    % Check that the experiment is valid, redo on fail
+    if (~isempty(answ) && ~isempty(answ2))
+        threadSnapshot.experiment = dicomuid;
+        threadSnapshot.data = ...
+            [{threadSnapshot.experiment}, {answ}, {answ2}, ...
+            {date}, {threadSnapshot.user}, {0}];
         assignin('base', 'threadSnapshot', threadSnapshot);
-        appendTableToStore('User');
+        appendTableToStore('Experiment');
         uiresume;
         delete(get(threadSnapshot.handles(3), 'Children'));
         delete(get(threadSnapshot.handles(7), 'Children'));
-    else
+        
+    elseif (~isempty(answ))
         uiwait(msgbox(...
-            'No name was entered, please try again', ...
+            'No Title was entered, please try again', ...
             'Warning', ...
             'warn'));
+        
+    else
+        uiwait(msgbox(...
+            'No Description was entered, please try again', ...
+            'Warning', ...
+            'warn'));
+        
     end
     % --------------------------------------------------------------------
     
@@ -285,20 +299,20 @@ function interactButton2_Callback(~,~,~) %#ok<DEFNU>
     % --------------------------------------------------------------------
     % Check that the user selection is correct and handle accordingly
     % TODO implement a password check
-    if (sum([panelData{:,3}]) ~= 1)
-        if (sum([panelData{:,3}]) > 1)
+    if (sum([panelData{:,7}]) ~= 1)
+        if (sum([panelData{:,7}]) > 1)
             uiwait(msgbox(...
-                'Too many users were selected, please try again', ...
+                'Too many experiments were selected, please try again', ...
                 'Warning', ...
                 'warn'));
         else
             uiwait(msgbox(...
-                'No user was selected, please try again', ...
+                'No experiment was selected, please try again', ...
                 'Warning', ...
                 'warn'));
         end
     else
-        threadSnapshot.user = panelData{logical([panelData{:, 3}]), 2};
+        threadSnapshot.experiment = panelData{logical([panelData{:, 7}]), 1};
         assignin('base', 'threadSnapshot', threadSnapshot);
         uiresume(threadSnapshot.handles(1));
         delete(get(threadSnapshot.handles(3), 'Children'));

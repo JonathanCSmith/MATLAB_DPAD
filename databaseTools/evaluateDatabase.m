@@ -21,13 +21,13 @@ function status = evaluateDatabase ()
     % --------------------------------------------------------------------
     % Compare database
     if (~exist(threadSnapshot.databasePath, 'dir'))
-       status = false;
-       return;
+        status = false;
+        return;
     end
     
     if (~exist(strcat(threadSnapshot.databasePath, '/LoadedData'), 'dir'))
-       status = false;
-       return;
+        status = false;
+        return;
     elseif (~exist(strcat(threadSnapshot.databasePath, ...
             '/LoadedData/UnprocessedDataStore.mat'), 'file'))
         status = false;
@@ -35,57 +35,57 @@ function status = evaluateDatabase ()
     end
     
     if (~exist(strcat(threadSnapshot.databasePath, '/ProcessedData'), 'dir'))
-       status = false;
-       return;
+        status = false;
+        return;
     elseif (~exist(strcat(threadSnapshot.databasePath, ...
-            '/LoadedData/ProcessedDataStore.mat'), 'file'))
+            '/ProcessedData/ProcessedDataStore.mat'), 'file'))
         status = false;
         return;
     end
     
     if (~exist(strcat(threadSnapshot.databasePath, '/AnalysedData'), 'dir'))
-       status = false;
-       return;
+        status = false;
+        return;
     elseif (~exist(strcat(threadSnapshot.databasePath, ...
-            '/LoadedData/AnalysedDataStore.mat'), 'file'))
+            '/AnalysedData/AnalysedDataStore.mat'), 'file'))
         % TODO implement when its ready
         %status = false;
         %return;
     end
     
     if (~exist(strcat(threadSnapshot.databasePath, '/Experiment'), 'dir'))
-       status = false;
-       return;
+        status = false;
+        return;
     elseif (~exist(strcat(threadSnapshot.databasePath, ...
-            '/LoadedData/ExperimentStore.mat'), 'file'))
+            '/Experiment/ExperimentStore.mat'), 'file'))
         status = false;
         return;
     end
     
     if (~exist(strcat(threadSnapshot.databasePath, '/Processers'), 'dir'))
-       status = false;
-       return;
+        status = false;
+        return;
     elseif (~exist(strcat(threadSnapshot.databasePath, ...
-            '/LoadedData/Processers'), 'file'))
+            '/Processers/Processers.mat'), 'file'))
         status = false;
         return;
     end
     
     if (~exist(strcat(threadSnapshot.databasePath, '/Analysers'), 'dir'))
-       status = false;
-       return;
+        status = false;
+        return;
     elseif (~exist(strcat(threadSnapshot.databasePath, ...
-            '/LoadedData/Analysers.mat'), 'file'))
+            '/Analysers/Analysers.mat'), 'file'))
         % TODO implement when ready
         %status = false;
         %return;
     end
     
     if (~exist(strcat(threadSnapshot.databasePath, '/Users'), 'dir'))
-       status = false;
-       return;
+        status = false;
+        return;
     elseif (~exist(strcat(threadSnapshot.databasePath, ...
-            '/LoadedData/UserStore.mat'), 'file'))
+            '/Users/UserStore.mat'), 'file'))
         status = false;
         return;
     end

@@ -77,7 +77,8 @@ function [] = CSynBi_LPAD (debug)
                    % TODO user inform on invalid database location
                    return
                 else 
-                    threadSnapshot.databasePath = answ;
+                    threadSnapshot.databasePath = strcat(...
+                                                answ,'/CSynBi_Database');
                     assignin('base', 'threadSnapshot', threadSnapshot);
                     answ = evaluateDatabase();
                     if (answ)
@@ -118,23 +119,31 @@ function [] = CSynBi_LPAD (debug)
     % --------------------------------------------------------------------
     % Setup a user environment
     
-    threadSnapshot.data = load(strcat(databasePath,'/Users/User.mat'), ...
-        'UserStore');
+    data = load(strcat(threadSnapshot.databasePath, ...
+        '/Users/UserStore.mat'), 'UserStore');
+    threadSnapshot.data = data.UserStore;
+    assignin('base', 'threadSnapshot', threadSnapshot);
+    parseStoreToTable();
+    threadSnapshot = evalin('base', 'threadSnapshot');
     
     % Handles if a user is already logged in, this is for future looping of
     % the main function to handle multiple experiment loading
-    if (isfield(threadSnapshot, 'user'))
+    if (isfield(threadSnapshot, 'user') && ...
+            ~strcmp(threadSnapshot.user, 'NULL'))
+        
         msg = 'Do you want to use your current username?';
         answ = questdlg(msg, 'User');
         switch answ
             case 'Yes'
                 skip = true;
+                
             case 'No'
                 skip = false;
+                
             case 'Cancel'
                 % TODO user inform on cancel press
                 return;
-        end
+        end  
     else
         skip = false;
     end
@@ -148,27 +157,81 @@ function [] = CSynBi_LPAD (debug)
         uiwait(threadSnapshot.handles(1));
         threadSnapshot = evalin('base', 'threadSnapshot');
         
-        % -----------------------------------------------------------------
+        % ----------------------------------------------------------------
         % Check to see that it was all set up correctly & save for new
         % users
-        if (isfield(threadSnapshot, 'user') && ...
-                ~isempty(threadSnapshot.user))
-            UserStore = threadSnapshot.data; %#ok<NASGU>
-            save(strcat(threadSnapshot.databasePath, ...
-                '/Users/UserStore.mat'), 'UserStore');
-        else
+        if (~isfield(threadSnapshot, 'user') || ...
+                strcmp(threadSnapshot.user,'NULL'))
             % TODO implement a user inform that the user system failed
             return;
         end
-        % -----------------------------------------------------------------
+        % ----------------------------------------------------------------
         
     else
         set(threadSnapshot.handles(1), 'Visible', 'on');
     end
     % --------------------------------------------------------------------
     
+    % --------------------------------------------------------------------
+    % Setup an experiment environment for tracking associated information
+    
+    skip = false;
+    data = load(strcat(threadSnapshot.databasePath, ...
+        '/Experiment/ExperimentStore.mat'), 'ExperimentStore');
+    threadSnapshot.data = data.ExperimentStore;
+    assignin('base', 'threadSnapshot', threadSnapshot);
+    parseStoreToTable();
+    threadSnapshot = evalin('base', 'threadSnapshot');
+    
+    % Handle the unusual/unlikely case where the user is still editing an
+    % experiment profile
+    if (isfield(threadSnapshot, 'experiment') && ...
+            ~strcmp(threadSnapshot.experiment, 'NULL'))
+        
+        msg = 'Do you want to continue editing the current experiment?';
+        answ = questdlg(msg, 'Experiment Information');
+        switch answ
+            case 'Yes'
+                skip = true;
+                
+            case 'No'
+                skip = false;
+                
+            case 'Cancel'
+                % TODO implement a user inform for cancel press
+                return;
+        end
+    else
+        skip = false;
+    end
+    
+    % Handle generating a new experiment profile and recording it to the
+    % current thread snapshot and updating the database
+    if (~skip)
+        assignin('base', 'threadSnapshot', threadSnapshot);
+        buildExperimentDisplay();
+        set(threadSnapshot.handles(1), 'Visible', 'on');
+        uiwait(threadSnapshot.handles(1));
+        threadSnapshot = evalin('base', 'threadSnapshot');
+        
+        % ----------------------------------------------------------------
+        % Check to see that everything was setup correctly and save it to
+        % the disk
+        if (~isfield(threadSnapshot, 'experiment') || ...
+                strcmp(threadSnapshot.experiment,'NULL'))
+            % TODO implement a user inform that the user system failed
+            return;
+        end
+        % ----------------------------------------------------------------
+    end
+    
     % TODO EXPERIMENT LOADING SCREEN!!!! Loadings are batch, may also need
     % to have a batch database
+    
+    % --------------------------------------------------------------------
+    
+    % TODO Experiment handling in main thread loop, I may be able to use
+    % the previous as a handler...
 end
 % ========================================================================
 %

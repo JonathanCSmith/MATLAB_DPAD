@@ -24,6 +24,8 @@ function [] = generateDatabase()
     if (answ == 0)
         threadSnapshot.databasePath = 'NULL';
         return;
+    else
+        threadSnapshot.databasePath = answ;
     end
     % --------------------------------------------------------------------
     
@@ -77,12 +79,14 @@ function [] = generateDatabase()
     
     % User database as this allows quick searching of data sets, resuming
     % of data analysis and database maintenance priviliges
-    UsersStore = struct('UserID',0,'Username','Root','Password:','none');
+    UserStore = struct('UserID', 0, ...
+                       'Username', 'Root', ...
+                       'Password', 'none');
     % TODO p file for user storage of password hash maps
-    save(strcat(databaseRoot,'/Users/UserStore.mat','UserStore'));
+    save(strcat(databaseRoot, '/Users/UserStore.mat'), 'UserStore');
     
     % Analysed data store, currently un-implemented
-    AnalysedDataStore = null;
+    AnalysedDataStore = 0;
     % TODO implement and save
     
     % Experiment data store groups the data being loaded by session under
@@ -100,8 +104,8 @@ function [] = generateDatabase()
                                                'ProcessedFiles', {0}, ...
                                                'AnalysedFiles', 'None', ...
                                                'Relationships', 0));
-    save(strcat(databaseRoot,'/Experiments/ExperimentStore.mat', ...
-        'ExperimentStore'));
+    save(strcat(databaseRoot,'/Experiment/ExperimentStore.mat'), ...
+        'ExperimentStore');
     
     % Processers are a qualitative description of how the
     % original files have been processed to arrive at the values observed
@@ -112,19 +116,20 @@ function [] = generateDatabase()
                         'ManipulationType', 0, ...
                         'Protocol', 0, ...
                         'IdentitiesDiscovered', 0);
-    save(strcat(databaseRoot,'/Processers/Processers.mat','Processers'));
+    save(strcat(databaseRoot,'/Processers/Processers.mat'),'Processers');
     
     % Analysers are a qualitative description of how the processed data
     % sets have been processed to arrive at analysed data, these are not
     % yet grouped according to publishable displays but are no longer
     % limited to single data type parameters.
-    Analysers = null;
+    Analysers = 0;
     % TODO implement and save
                                     
     % --------------------------------------------------------------------
     
     % --------------------------------------------------------------------
     % Finish Up!
+    threadSnapshot.databasePath = databaseRoot;
     assignin('base', 'threadSnapshot', threadSnapshot);
     % --------------------------------------------------------------------
 

@@ -46,6 +46,8 @@ end
 
 function [] = gui_main ()
 
+    appdata = [];
+
     % --------------------------------------------------------------------
     % Main parent figure layout
     h1 = figure('Units', 'characters', ...
@@ -250,7 +252,7 @@ function [] = gui_main ()
     set(h15, 'XTick', [], 'YTick', []);
     
     % Visibility setup
-    set(h1, 'Visibile', 'off');
+    set(h1, 'Visible', 'off');
     
     % Setup handles structure so all components can be accessed later.
     threadSnapshot = struct('handles', [h1,h2,h3,h4,h5,h6,h7,h8,h9,h10, ...
